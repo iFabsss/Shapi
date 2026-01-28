@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Shapi" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Myapp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="<%= asset_path 'shapi_logo.png' %>" type="image/png">
+    <!--<link rel="icon" href="/icon.svg" type="image/svg+xml">-->
+    <link rel="apple-touch-icon" href="<%= asset_path 'shapi_logo.png' %>">
+
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Preahvihear&display=swap" rel="stylesheet">
+
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="flex items-center justify-center min-w-screen h-screen p-4 overflow-hidden">
+    <div>
+      <h1 class="text-4xl font-bold mb-4 primary-text-color">Welcome to Shapi!</h1>
+      <h2 class="text-2xl mb-2">Sa Shapi, Hapi!</h2>
+      <p class="text-lg mb-6">Your one-stop shop for all things which makes you happy!</p>
+      <div class="flex space-x-4 justify-center">
+        <%= link_to "Enter Site", home_path, class: "secondary-btn-color hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+        <%= link_to "Learn More", "/about", class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+        </div>
+    </div>
+    <img src="<%= asset_path 'shapi_logo.png' %>" alt="Welcome Image" class="w-1/3">
+  </body>
+</html>
