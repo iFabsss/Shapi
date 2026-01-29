@@ -50,8 +50,6 @@ body {
     font-weight: bold;
 }
 
-.sidebar-link:hover {}
-
 #logout-btn {
     background-color: #ff4444;
     color: white;
@@ -85,5 +83,5 @@ body {
 
 .overflow-y-scroll {
     scrollbar-width: thin;
-    scrollbar-color: #8fbf3e transparent;
+    scrollbar-color: #45b2e06D transparent;
 }

@@ -3,7 +3,6 @@ class OrdersController < ApplicationController
 
 
   def index
-    @orders = Current.session.user.orders.order(created_at: :desc, status: "cart")
   end
 
   def show

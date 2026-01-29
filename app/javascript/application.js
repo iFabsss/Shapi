@@ -7,6 +7,7 @@ document.addEventListener("turbo:load", () => {
     initProducts()
     initAuthModal()
     initCart()
+    initOrders()
 })
 
 function initAuthModal() {
@@ -124,7 +125,7 @@ function truncateText(text, maxLength) {
 
 function showProductDetails(product) {
     const productCard = document.createElement("div")
-    productCard.className = "border rounded-lg p-4 shadow-lg max-w-md mx-auto nax-h-full bg-white z-20 relative"
+    productCard.className = "border rounded-lg p-4 shadow-lg max-w-md mx-auto max-h-11/12 bg-white z-20 relative overflow-y-scroll scrollbar-hide"
 
     productCard.innerHTML = `
         <div class="flex flex-col">
@@ -294,7 +295,13 @@ function initCart() {
                     `;
 
                     const deleteBtn = orderDiv.querySelector("#delete-btn");
+
+
+
                     deleteBtn.addEventListener("click", () => {
+                        const confirmDelete = confirm(`Are you sure you want to remove "${order.product_name}" from your cart?`);
+                        if (!confirmDelete) return;
+
                         const token = document.querySelector('meta[name="csrf-token"]').content;
 
                         fetch(`/orders/${order.id}`, {
@@ -359,7 +366,35 @@ function initCart() {
 
                     const checkoutBtn = orderDiv.querySelector("#checkout-btn");
                     checkoutBtn.addEventListener("click", () => {
-                        alert(`Proceeding to checkout for "${order.product_name}". (Functionality not implemented)`);
+                        const confirmCheckout = confirm(`Checkout "${order.product_name}" for $${order.price}?`);
+                        if (!confirmCheckout) return;
+
+                        const token = document.querySelector('meta[name="csrf-token"]').content;
+
+                        fetch(`/orders/${order.id}`, {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-Token": token,
+                                "Accept": "application/json"
+                            },
+                            body: JSON.stringify({
+                                order: { status: "pending" }
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(`Successfully checked out "${order.product_name}".`);
+                                    orderDiv.remove();
+                                } else {
+                                    alert("Checkout failed: " + data.errors.join(", "));
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Checkout error:", error);
+                                alert("Something went wrong during checkout.");
+                            });
                     });
 
                     cartGrid.appendChild(orderDiv);
@@ -378,5 +413,129 @@ function initCart() {
         .finally(() => {
             cartLoading.classList.add("hidden");
             cartGrid.classList.remove("opacity-0");
+        });
+}
+
+function initOrders() {
+    const ordersGrid = document.getElementById("orders-grid");
+    const ordersLoading = document.getElementById("orders-loading");
+    if (!ordersGrid || !ordersLoading) return;
+
+    ordersGrid.classList.add("opacity-0")
+    ordersGrid.innerHTML = "" // Clear previous content
+
+    fetch("/orders", {
+        method: "GET",
+        headers: { "Accept": "application/json" }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                data.orders.forEach(order => {
+                    const orderDiv = document.createElement("div");
+                    orderDiv.className = "border border-red-200 rounded-lg p-4 shadow bg-amber-50 h-full flex flex-col";
+
+                    const imgUrl = order.img_src || "/fallback-image.png"; // fallback
+
+                    let cancelButtonHTML = `
+                            <button id="cancel-btn" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition cursor-pointer hidden">
+                                Cancel
+                            </button>
+                        `;
+
+
+                    orderDiv.innerHTML = `
+                        <div class="flex h-full items-center gap-4">
+                            <div class="w-full h-24 flex-1 items-center justify-center flex">
+                                <img src="${imgUrl}"
+                                    alt="${order.product_name}"
+                                    class="max-h-full object-contain">
+                            </div>
+
+                            <h3 class="font-bold text-lg flex-3">
+                                ${order.product_name}
+                            </h3>
+
+                            <div class="flex-1 flex gap-2 justify-end items-center">
+                                ${cancelButtonHTML}
+                                
+
+                                <p class="text-gray-400 font-semibold text-right">
+                                    $${order.price}
+                                </p>
+
+                                <p class="text-gray-600 font-semibold">
+                                    X
+                                </p>
+
+                                <input id="order-quantity" name="order-quantity" type="number" value="${order.quantity}" min="1"
+                                    class="border rounded w-16 px-2 py-1" disabled>
+
+                                <p id="order-total" class="text-green-600 font-semibold min-w-fit">
+                                    = $${(order.price * order.quantity).toFixed(2)}
+                                </p>
+
+                                <p class="text-blue-600 font-semibold ml-10">
+                                    Status: ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                </p>
+                            </div>
+                        </div>
+                    `;
+
+                    if (order.status !== "cancelled" && order.status !== "delivered") {
+                        const cancelBtn = orderDiv.querySelector("#cancel-btn");
+                        cancelBtn.classList.remove("hidden");
+                        cancelBtn.addEventListener("click", () => {
+                            const token = document.querySelector('meta[name="csrf-token"]').content;
+
+                            const confirmCancel = confirm(`Are you sure you want to cancel "${order.product_name}" from your orders?`);
+                            if (!confirmCancel) return;
+
+                            fetch(`/orders/${order.id}`, {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-Token": token,
+                                    "Accept": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    order: { status: "cancelled" }
+                                })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        alert(`Cancelled your order of "${order.product_name}".`);
+                                        window.location.reload();
+                                    } else {
+                                        alert("Failed to cancel item: " + data.errors.join(", "));
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Delete order error:", error);
+                                    alert("Something went wrong removing the item.");
+                                });
+                        });
+
+                    };
+
+
+
+                    ordersGrid.appendChild(orderDiv);
+                });
+
+
+
+            } else {
+                ordersGrid.innerHTML = "<p class='text-gray-600'>Your cart is empty.</p>";
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching cart:", error);
+            ordersGrid.innerHTML = "<p class='text-gray-600'>Error loading cart.</p>";
+        })
+        .finally(() => {
+            ordersLoading.classList.add("hidden");
+            ordersGrid.classList.remove("opacity-0");
         });
 }

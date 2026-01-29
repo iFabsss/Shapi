@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :users, only: [ :new, :create, :show, :update ]
-  resources :orders do
+  get "/orders", to: "home#orders"
+  resources :orders, only: [ :index, :show, :create, :update, :destroy ] do
     collection do
       get :cart
     end
@@ -16,5 +17,4 @@ Rails.application.routes.draw do
 
   get "/home", to: "home#index"
   get "/cart", to: "home#cart"
-  get "/orders", to: "home#orders"
 end
