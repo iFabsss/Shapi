@@ -69,21 +69,21 @@
       <div class=" text-shadow-gray-950 text-2xl">
         <aside class="sidebar sticky top-4 h-full w-48 p-4 backdrop:blur-sm bg-white/50 rounded-lg shadow-lg">
           <ul class="flex flex-col justify-around items-center h-full text-right">
-            <li class="sidebar-item <%= 'active' if current_page?(home_path) %>">
+            <li class="sidebar-item transition <%= 'active' if current_page?(home_path) %>">
               <%= link_to "Home", home_path,
                   class: "sidebar-link #{'active' if current_page?(home_path)}" %>
             </li>
 
-            <li class="sidebar-item <%= 'active' if current_page?(cart_path) %>">
+            <li class="sidebar-item transition <%= 'active' if current_page?(cart_path) %>">
               <%= link_to "Cart", cart_path,
                   class: "sidebar-link #{'active' if current_page?(cart_path)}" %>
             </li>
 
-            <li class="sidebar-item <%= 'active' if current_page?(orders_path) %>">
+            <li class="sidebar-item transition <%= 'active' if current_page?(orders_path) %>">
               <%= link_to "Orders", orders_path,
                   class: "sidebar-link #{'active' if current_page?(orders_path)}" %>
             </li>
-            <li><%= button_to "Logout", session_path, method: :delete, class: "sidebar-link block text-center", id: "logout-btn" %></li>
+            <li><%= button_to "Logout", session_path, method: :delete, class: "sidebar-link block text-center transition", id: "logout-btn" %></li>
           </ul>
         </aside>
       </div>

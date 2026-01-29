@@ -28,6 +28,10 @@ body {
     background-color: #45b2e0;
 }
 
+.primary-btn-color:hover {
+    background-color: #3791c6;
+}
+
 .secondary-btn-color {
     background-color: #a0cc51;
 }

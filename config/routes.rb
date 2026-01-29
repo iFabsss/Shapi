@@ -1,11 +1,19 @@
 Rails.application.routes.draw do
-  get "users/new"
-  get "users/create"
-  get "users/update"
   resource :session
   resources :passwords, param: :token
   resources :users, only: [ :new, :create, :show, :update ]
+  resources :orders do
+    collection do
+      get :cart
+    end
+  end
+
   root "startup#index"
+
+  get "users/new"
+  get "users/create"
+  get "users/update"
+
   get "/home", to: "home#index"
   get "/cart", to: "home#cart"
   get "/orders", to: "home#orders"
