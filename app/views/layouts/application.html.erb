@@ -35,7 +35,6 @@
 
   <body class="flex flex-col h-screen max-h-screen p-4 ">
     <header>
-      
       <nav class="navbar flex justify-between">
         <div class="flex items-center space-x-4">
           <img src="<%= asset_path 'shapi_logo.png' %>" alt="Shapi Logo" class="h-16 w-16">
@@ -45,7 +44,13 @@
           </div>
         </div>
         <div class="flex space-x-10 items-center">
-
+          <div>
+            <% if current_user %>
+              <span class="text-gray-700">Welcome, <%= current_user.username %>!</span>
+            <% else %>
+              <%= link_to "Login", new_session_path, class: "primary-text-color hover:text-blue-600" %>
+            <% end %>
+          </div>
           <div class="relative inline-block">
             <input type="text"
                   name="search"
@@ -78,7 +83,7 @@
               <%= link_to "Orders", orders_path,
                   class: "sidebar-link #{'active' if current_page?(orders_path)}" %>
             </li>
-            <li><%= link_to "Logout", root_path, class: "sidebar-link block w-full text-center", id: "logout-btn" %></li>
+            <li><%= button_to "Logout", session_path, method: :delete, class: "sidebar-link block w-full text-center", id: "logout-btn" %></li>
           </ul>
         </aside>
       </div>
