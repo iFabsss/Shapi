@@ -25,7 +25,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Preahvihear&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Preahvihear&display=swap" rel="stylesheet">
 
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
@@ -39,7 +39,7 @@
         <div class="flex items-center space-x-4">
           <img src="<%= asset_path 'shapi_logo.png' %>" alt="Shapi Logo" class="h-16 w-16">
           <div class="text-xl">
-            <h1 class="primary-text-color">Shapi</h1>
+            <h1 class="primary-text-color font-bold">Shapi</h1>
             <h2 class="secondary-text-color">Sa Shapi, Hapi!</h2>
           </div>
         </div>
@@ -64,34 +64,33 @@
       </nav>
       
     </header>
-    <hr class="my-4">
-    <main class="flex flex-row overflow-hidden grow">
+    
+    <main class="flex flex-row overflow-hidden grow p-4 space-x-2">
       <div class=" text-shadow-gray-950 text-2xl">
-        <aside class="sidebar sticky top-4 h-full w-48 p-4 border-r-2">
-          <ul class="flex flex-col justify-around h-full text-right">
-            <li>
+        <aside class="sidebar sticky top-4 h-full w-48 p-4 backdrop:blur-sm bg-white/50 rounded-lg shadow-lg">
+          <ul class="flex flex-col justify-around items-center h-full text-right">
+            <li class="sidebar-item <%= 'active' if current_page?(home_path) %>">
               <%= link_to "Home", home_path,
                   class: "sidebar-link #{'active' if current_page?(home_path)}" %>
             </li>
 
-            <li>
+            <li class="sidebar-item <%= 'active' if current_page?(cart_path) %>">
               <%= link_to "Cart", cart_path,
                   class: "sidebar-link #{'active' if current_page?(cart_path)}" %>
             </li>
 
-            <li>
+            <li class="sidebar-item <%= 'active' if current_page?(orders_path) %>">
               <%= link_to "Orders", orders_path,
                   class: "sidebar-link #{'active' if current_page?(orders_path)}" %>
             </li>
-            <li><%= button_to "Logout", session_path, method: :delete, class: "sidebar-link block w-full text-center", id: "logout-btn" %></li>
+            <li><%= button_to "Logout", session_path, method: :delete, class: "sidebar-link block text-center", id: "logout-btn" %></li>
           </ul>
         </aside>
       </div>
-      <div class="flex flex-col overflow-y-scroll min-h-full w-full p-4">
+      <div class="flex flex-col overflow-y-scroll min-h-full w-full p-4 backdrop:blur-sm bg-white/50 rounded-lg shadow-lg">
         <%= yield %>
       </div>
     </main>
-    <hr class="my-4">
     <footer class="flex items-center justify-center py-4 w-full">
       <p>&copy; <%= Time.current.year %> Shapi</p>
     </footer>

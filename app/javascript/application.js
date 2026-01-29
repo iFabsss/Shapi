@@ -66,7 +66,7 @@ function initProducts() {
                 const shortDescription = truncateText(product.description, 80)
 
                 const productDiv = document.createElement("div")
-                productDiv.className = "border rounded-lg p-4 shadow hover:shadow-lg transition bg-amber-50 cursor-pointer h-full flex flex-col"
+                productDiv.className = "border border-red-200 rounded-lg p-4 shadow hover:shadow-lg transition bg-pink-100 cursor-pointer h-full flex flex-col"
 
                 productDiv.innerHTML = `
                     <div class="flex flex-col h-full">
